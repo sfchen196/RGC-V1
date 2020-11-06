@@ -1,4 +1,4 @@
-function [Result] = compute_op(pos_ON,pos_OFF,w0_V1_ON,w0_V1_OFF,w_V1_ON,w_V1_OFF)
+function [Result] = compute_OP(pos_ON,pos_OFF,w0_V1_ON,w0_V1_OFF,w_V1_ON,w_V1_OFF)
 pos_ON = (pos_ON(:,1)+1i*pos_ON(:,2));
 pos_OFF = (pos_OFF(:,1)+1i*pos_OFF(:,2));
 
