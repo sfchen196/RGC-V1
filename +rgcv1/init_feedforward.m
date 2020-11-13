@@ -3,7 +3,7 @@ tic;
 % pos_OFF = gpuArray(pos_OFF);
 % pos_ON = gpuArray(pos_ON);
 % pos_V1 = gpuArray(pos_V1);
-
+ 
 % V1<-ON
 distx = pos_V1(:,1)-pos_ON(:,1)';
 disty = pos_V1(:,2)-pos_ON(:,2)';

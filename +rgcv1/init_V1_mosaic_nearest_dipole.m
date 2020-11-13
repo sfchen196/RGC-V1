@@ -1,4 +1,4 @@
-function [pos_V1, pos_OFF] = init_V1_mosaic(d_V1,d_OFF,crop_x,crop_y,pos_ON,pos_OFF,type)
+function [pos_V1, pos_OFF] = init_V1_mosaic_nearest_dipole(d_V1,d_OFF,crop_x,crop_y,pos_ON,pos_OFF,type)
 tic; 
 pos_V1 = [];
 if type == 1
@@ -19,7 +19,7 @@ if type == 2
     for ii = 1:size(pos_OFF,1)
         temp_OFF = pos_OFF(ii,:);
         dist2 = sum((pos_ON-temp_OFF).^2,2);
-        near_ONs = find(dist2<(d_OFF*1.5)^2);
+        near_ONs = dist2<(d_OFF*1.5)^2;
         pos_V1 = [pos_V1;(pos_ON(near_ONs,:)+temp_OFF)/2];
     end
 end

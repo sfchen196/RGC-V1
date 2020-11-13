@@ -15,7 +15,7 @@
 crop_x = 1600;
 crop_y = 1600;
 % crop_ON = data_ON; crop_OFF = data_OFF;
-crop_ON = zeros(150,2); crop_OFF = zeros(160,2); %% dumb data
+crop_ON = zeros(150,2); crop_OFF = zeros(160,2); %% toy data
 
 crop_ON(abs(crop_ON(:,1))>crop_x|abs(crop_ON(:,2))>crop_y,:) = [];
 crop_OFF(abs(crop_OFF(:,1))>crop_x|abs(crop_OFF(:,2))>crop_y,:) = [];
@@ -25,7 +25,7 @@ pad_r = 1900;
 
 
 %% RGC mosaics
-Result = RGC_mosaic(crop_ON,crop_OFF,pad_r,crop_x,crop_y);
+Result = rgcv1.RGC_mosaic(crop_ON,crop_OFF,pad_r,crop_x,crop_y);
 
 pos_ON = cell2mat(Result(1));
 pos_OFF = cell2mat(Result(2));
@@ -41,11 +41,11 @@ title('ON and OFF-center RGC mosaics');
 
 %% init_V1_mosaic
 d_V1 = [];
-[pos_V1, pos_OFF] = init_V1_mosaic(d_V1,d_OFF,crop_x,crop_y,pos_ON,pos_OFF,2);
+[pos_V1, pos_OFF] = rgcv1.init_V1_mosaic_nearest_dipole(d_V1,d_OFF,crop_x,crop_y,pos_ON,pos_OFF,2);
 figure(2);
 plot(pos_V1(:,1),pos_V1(:,2), '.r');
 axis([-2000 2000 -2000 2000]);hold on;
-[pos_V1, pos_OFF] = init_V1_mosaic(d_V1,d_OFF,crop_x,crop_y,pos_ON,pos_OFF,3);
+[pos_V1, pos_OFF] = rgcv1.init_V1_mosaic_nearest_dipole(d_V1,d_OFF,crop_x,crop_y,pos_ON,pos_OFF,3);
 plot(pos_V1(:,1),pos_V1(:,2), '.b');
 title('dipole sampling (red) and nearest dipole (blue)');
 
@@ -57,20 +57,20 @@ ff_w0_str = 0.05; % Initial wiring strength
 ff_w0_thr = 0; % V1 selection threshold
 
 % Initial feedforward wiring
-Result = init_feedforward(ff_w0_sig,pos_OFF,pos_ON,pos_V1,ff_w0_str,ff_w0_thr);
+Result = rgcv1.init_feedforward(ff_w0_sig,pos_OFF,pos_ON,pos_V1,ff_w0_str,ff_w0_thr);
 w0_V1_ON = cell2mat(Result(1));
 w0_V1_OFF = cell2mat(Result(2));
 w_V1_ON = w0_V1_ON;
 w_V1_OFF = w0_V1_OFF;
 pos_V1 = cell2mat(Result(3));
 
-Result = compute_OP(pos_ON,pos_OFF,w0_V1_ON,w0_V1_OFF,w_V1_ON,w_V1_OFF);
+Result = rgcv1.compute_OP(pos_ON,pos_OFF,w0_V1_ON,w0_V1_OFF,w_V1_ON,w_V1_OFF);
 op0 = Result(:,1);
 op = Result(:,2);
 
 imgsize_y = imgsize_x*crop_y/crop_x;
-opmap0 = V1_filt_Gaussian(crop_x,crop_y,imgsize_x,img_sig,pos_V1,op0,true);
-opmap = V1_filt_Gaussian(crop_x,crop_y,imgsize_x,img_sig,pos_V1,op,true);
+opmap0 = rgcv1.V1_filt_Gaussian(crop_x,crop_y,imgsize_x,img_sig,pos_V1,op0,true);
+opmap = rgcv1.V1_filt_Gaussian(crop_x,crop_y,imgsize_x,img_sig,pos_V1,op,true);
 
 figure(3);
 subplot(121); imagesc(opmap0); axis xy image; title('Initial'); colormap(hsv);
