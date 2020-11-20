@@ -1,4 +1,4 @@
-function [Result] = RGC_AC_mosaic(crop_ON,crop_OFF,pad_r,crop_x,crop_y)
+function [Result] = RGC_mosaic(crop_ON,crop_OFF,pad_r,crop_x,crop_y)
 disp("Generate RGC padding and AC mosaics");
 
 %% Lattice spacing
