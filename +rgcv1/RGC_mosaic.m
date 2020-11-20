@@ -2,9 +2,9 @@ function [Result] = RGC_AC_mosaic(crop_ON,crop_OFF,pad_r,crop_x,crop_y)
 disp("Generate RGC padding and AC mosaics");
 
 %% Lattice spacing
-density_ON = size(crop_ON,1)/4/crop_x/crop_y; %%csf number of cells/vertices in unit surface
+density_ON = size(crop_ON,1)/4/crop_x/crop_y; %% number of cells/vertices in unit surface
 density_OFF = size(crop_OFF,1)/4/crop_x/crop_y;
-d_ON = sqrt(2/sqrt(3)/density_ON); %%csf distance/spacing between 2 cells (b.c. most adjacent 3 cells form an equilateral triangle)
+d_ON = sqrt(2/sqrt(3)/density_ON); %% distance/spacing between 2 cells (b.c. most adjacent 3 cells form an equilateral triangle)
 d_OFF = sqrt(2/sqrt(3)/density_OFF);
 
 theta = 0.15*pi; rot_OFF = [cos(theta) sin(theta); -sin(theta) cos(theta)]; %%csf clockwise rotation of theta
@@ -17,11 +17,11 @@ Lij = ij*hex';
 pos_OFF = d_OFF*Lij;
 pos_ON = d_ON*Lij*rot_OFF';
 
-
+%% Positional Noise
 noise = randn(size(pos_OFF))*d_OFF*0.1; % std = 10% d_OFF
 % pos_ON = pos_ON + noise;
 % pos_OFF = pos_OFF + noise;
-%% Give displacement ????
+%% Spacial Shift
 % pos_OFF = pos_OFF+[500 1250];
 
 

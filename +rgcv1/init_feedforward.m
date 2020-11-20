@@ -5,11 +5,11 @@ tic;
 % pos_V1 = gpuArray(pos_V1);
  
 % V1<-ON
-distx = pos_V1(:,1)-pos_ON(:,1)';
-disty = pos_V1(:,2)-pos_ON(:,2)';
-
+distx = pos_V1(:,1)-pos_ON(:,1)'; %% n*n matrix, each row - the distance in x between each V1 and all ON cells
+disty = pos_V1(:,2)-pos_ON(:,2)'; %% n*n matrix, each row - the distance in y between each V1 and all ON cells
+ 
 dist2 = distx.^2+disty.^2;
-w0_V1_ON = exp(-1/2/ff_w0_sig^2*dist2);
+w0_V1_ON = exp(-1/2/ff_w0_sig^2*dist2); %% calcuate the mean receptive field, negative correlation between dist and feedforward weight
 
 dist = sqrt(dist2);
 w0_V1_ON = exp(-dist/ff_w0_sig);
@@ -35,7 +35,7 @@ w0_V1_ON(remove,:) = [];
 w0_V1_OFF(remove,:) = [];
 
 % Normalize input weight
-w0_V1_ON = w0_V1_ON./sum(w0_V1_ON,2)*ff_w0_str/2;
+w0_V1_ON = w0_V1_ON./sum(w0_V1_ON,2)*ff_w0_str/2; % (0-1)input weight from each ON cell relative to sum of inputs from all ON cells
 w0_V1_OFF = w0_V1_OFF./sum(w0_V1_OFF,2)*ff_w0_str/2;
 w0_V1_ON(w0_V1_ON>1) = 1;
 w0_V1_OFF(w0_V1_OFF>1) = 1;

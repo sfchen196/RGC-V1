@@ -10,7 +10,7 @@ if type == 1
     
     pos_V1 = d_V1*Lij*rot';
     noise = randn(size(pos_V1))*d_V1*0.1; % std = 10% d_V1
-    pos_V1 = pos_V1 + noise;
+%     pos_V1 = pos_V1 + noise;
    
 end
 

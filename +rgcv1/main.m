@@ -24,7 +24,7 @@ crop_OFF(abs(crop_OFF(:,1))>crop_x|abs(crop_OFF(:,2))>crop_y,:) = [];
 pad_r = 1900;
 
 
-%% RGC mosaics
+%% Retinal Ganglion Cell mosaics
 Result = rgcv1.RGC_mosaic(crop_ON,crop_OFF,pad_r,crop_x,crop_y);
 
 pos_ON = cell2mat(Result(1));
@@ -33,7 +33,7 @@ d_ON = cell2mat(Result(3));
 d_OFF = cell2mat(Result(4));
 
 figure(1);
-plot(pos_ON(:, 1), pos_ON(:,2), '.r');
+ax(1) = subplot(121);plot(pos_ON(:, 1), pos_ON(:,2), '.r'); 
 axis([-2000 2000 -2000 2000]);
 hold on;
 plot(pos_OFF(:, 1), pos_OFF(:,2), '.b');
@@ -42,18 +42,22 @@ title('ON and OFF-center RGC mosaics');
 %% init_V1_mosaic
 d_V1 = [];
 [pos_V1, pos_OFF] = rgcv1.init_V1_mosaic_nearest_dipole(d_V1,d_OFF,crop_x,crop_y,pos_ON,pos_OFF,2);
-figure(2);
-plot(pos_V1(:,1),pos_V1(:,2), '.r');
-axis([-2000 2000 -2000 2000]);hold on;
+figure(1);
+ax(2) = subplot(122);plot(pos_V1(:,1),pos_V1(:,2), '.r');
+linkaxes(ax,'xy');
+axis([-2000 2000 -2000 2000]);
+hold on;
 [pos_V1, pos_OFF] = rgcv1.init_V1_mosaic_nearest_dipole(d_V1,d_OFF,crop_x,crop_y,pos_ON,pos_OFF,3);
 plot(pos_V1(:,1),pos_V1(:,2), '.b');
 title('dipole sampling (red) and nearest dipole (blue)');
 
-%% construct orientation map
+%% statistical connectivity and receptive field computation
 imgsize_x = 200; % Filtered map width
 img_sig = 7; % Gaussian image filtering width (unit: pixels)
 ff_w0_sig = 18; % 24 for monkey/mouse, 18 for cat % Initial Exponential wiring range
 ff_w0_str = 0.05; % Initial wiring strength
+
+% increase threshold to see what changes
 ff_w0_thr = 0; % V1 selection threshold
 
 % Initial feedforward wiring
@@ -73,7 +77,9 @@ opmap0 = rgcv1.V1_filt_Gaussian(crop_x,crop_y,imgsize_x,img_sig,pos_V1,op0,true)
 opmap = rgcv1.V1_filt_Gaussian(crop_x,crop_y,imgsize_x,img_sig,pos_V1,op,true);
 
 figure(3);
-subplot(121); imagesc(opmap0); axis xy image; title('Initial'); colormap(hsv);
-caxis([-pi/2 pi/2]); colorbar;
-subplot(122); imagesc(opmap); axis xy image; title('Final'); colormap(hsv);
+% ax(1) = subplot(221); imagesc(opmap0); axis xy image; title('Initial'); colormap(hsv);
+% caxis([-pi/2 pi/2]); colorbar;
+ax(1) = subplot(121); imagesc(opmap); axis xy image; colormap(hsv);
 caxis([-pi/2 pi/2]); colorbar; drawnow;
+title('main');
+gather(ax);
