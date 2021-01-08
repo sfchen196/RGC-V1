@@ -92,7 +92,7 @@ op0 = Result(:,1);
 
 num_cell = numel(pos_V1);
 op_unwrap=reshape(op0,321,321);
-figure; imagesc(op_unwrap); caxis([-pi/2 pi/2]); colorbar; colormap(hsv); axis xy image
+figure(1); subplot(1,2,1);imagesc(op_unwrap); caxis([-pi/2 pi/2]); colorbar; colormap(hsv); axis xy image
 % imagesc(-1600:100:1600,-1600:100:1600,op_unwrap);
 
 

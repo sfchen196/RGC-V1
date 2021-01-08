@@ -42,14 +42,14 @@ d_OFF = cell2mat(Result(4));
 %% init_V1_mosaic
 d_V1 = [];
 [pos_V1, pos_OFF] = rgcv1.init_V1_mosaic_nearest_dipole(d_V1,d_OFF,crop_x,crop_y,pos_ON,pos_OFF,2);
-figure(1);
-ax(2) = subplot(122);plot(pos_V1(:,1),pos_V1(:,2), '.r');
-linkaxes(ax,'xy');
-axis([-2000 2000 -2000 2000]);
-hold on;
+% figure(1);
+% ax(2) = subplot(122);plot(pos_V1(:,1),pos_V1(:,2), '.r');
+% linkaxes(ax,'xy');
+% axis([-2000 2000 -2000 2000]);
+% hold on;
 [pos_V1, pos_OFF] = rgcv1.init_V1_mosaic_nearest_dipole(d_V1,d_OFF,crop_x,crop_y,pos_ON,pos_OFF,3);
-plot(pos_V1(:,1),pos_V1(:,2), '.b');
-title('dipole sampling (red) and nearest dipole (blue)');
+% plot(pos_V1(:,1),pos_V1(:,2), '.b');
+% title('dipole sampling (red) and nearest dipole (blue)');
 
 %% statistical connectivity and receptive field computation
 imgsize_x = 200; % Filtered map width
@@ -73,4 +73,4 @@ op0 = Result(:,1);
 op0 = [op0; 0;0;0]
 op0 = reshape(op0,12,12);
 
-figure; imagesc(op0); caxis([-pi/2 pi/2]); colorbar; colormap(hsv); axis xy image
+figure(1); subplot(1,2,2);imagesc(op0); caxis([-pi/2 pi/2]); colorbar; colormap(hsv); axis xy image
