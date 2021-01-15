@@ -1,0 +1,87 @@
+
+%% Set up parameters
+crop_x = 1600;
+crop_y = 1600;
+% crop_ON = data_ON; crop_OFF = data_OFF;
+crop_ON = zeros(150,2); crop_OFF = zeros(160,2); %% toy data
+
+crop_ON(abs(crop_ON(:,1))>crop_x|abs(crop_ON(:,2))>crop_y,:) = [];
+crop_OFF(abs(crop_OFF(:,1))>crop_x|abs(crop_OFF(:,2))>crop_y,:) = [];
+
+
+pad_r = 1900;
+
+
+%% Retinal Ganglion Cell mosaics
+Result = rgcv1.RGC_mosaic(crop_ON,crop_OFF,pad_r,crop_x,crop_y);
+
+pos_ON = cell2mat(Result(1));
+pos_OFF = cell2mat(Result(2));
+d_ON = cell2mat(Result(3));
+d_OFF = cell2mat(Result(4));
+
+%% init_V1_mosaic
+
+% [pos_V1, pos_OFF] = rgcv1.init_V1_mosaic_nearest_dipole(d_V1,d_OFF,crop_x,crop_y,pos_ON,pos_OFF,2);
+% figure(2);
+% plot(pos_V1(:,1),pos_V1(:,2), '.r');
+% axis([-2000 2000 -2000 2000]);hold on;
+% [pos_V1, pos_OFF] = rgcv1.init_V1_mosaic_nearest_dipole(d_V1,d_OFF,crop_x,crop_y,pos_ON,pos_OFF,3);
+% plot(pos_V1(:,1),pos_V1(:,2), '.b');
+% title('dipole sampling (red) and nearest dipole (blue)');
+% d_V1 = [];
+% [pos_V1, pos_OFF] = rgcv1.init_V1_mosaic_nearest_dipole(d_V1,d_OFF,crop_x,crop_y,pos_ON,pos_OFF,2);
+% figure(1);
+% ax(2) = subplot(122);plot(pos_V1(:,1),pos_V1(:,2), '.r');
+% linkaxes(ax,'xy');
+% axis([-2000 2000 -2000 2000]);
+% hold on;
+% [pos_V1, pos_OFF] = rgcv1.init_V1_mosaic_nearest_dipole(d_V1,d_OFF,crop_x,crop_y,pos_ON,pos_OFF,3);
+% plot(pos_V1(:,1),pos_V1(:,2), '.b');
+% title('dipole sampling (red) and nearest dipole (blue)');
+
+%% statistical connectivity and receptive field computation
+
+        %% build a square (instead of hexagonal) V1 mosaic without ON/OFF inputs
+pos_V1 = combvec(-1600:10:1600,-1600:10:1600)';
+
+% figure(2);
+% plot(pos_V1(:,1),pos_V1(:,2), '.b');
+% title('V1 constructed without knowing RGC positions');
+
+imgsize_x = 200; % Filtered map width
+img_sig = 7; % Gaussian image filtering width (unit: pixels)
+ff_w0_sig = 18; % 24 for monkey/mouse, 18 for cat % Initial Exponential wiring range
+ff_w0_str = 0.05; % Initial wiring strength
+
+% increase threshold to see what changes
+ff_w0_thr = 0; % V1 selection threshold
+
+figure(1); title('main6: our method');
+for i = 1:2:7
+    
+    ff_w0_sig = i * 18;
+
+    % Initial feedforward wiring
+    Result = rgcv1.init_feedforward(ff_w0_sig,pos_OFF,pos_ON,pos_V1,ff_w0_str,ff_w0_thr);
+
+    w0_V1_ON = cell2mat(Result(1));
+    w0_V1_OFF = cell2mat(Result(2));
+    w_V1_ON = w0_V1_ON;
+    w_V1_OFF = w0_V1_OFF;
+    pos_V1 = cell2mat(Result(3));
+
+    Result = rgcv1.compute_OP(pos_ON,pos_OFF,w0_V1_ON,w0_V1_OFF,w_V1_ON,w_V1_OFF);
+    op0 = Result(:,1);
+    % op = Result(:,2);
+
+    num_cell = numel(pos_V1);
+    op_unwrap=reshape(op0,321,321);
+    figure(1); subplot(2,2,(i+1)/2);imagesc(op_unwrap); caxis([-pi/2 pi/2]); colorbar; colormap(hsv); axis xy image
+    imagesc(-1600:10:1600,-1600:10:1600,op_unwrap);
+    title(['sigma = ' num2str(ff_w0_sig)]);
+
+end
+
+
+
