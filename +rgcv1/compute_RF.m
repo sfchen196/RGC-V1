@@ -39,38 +39,38 @@ function [RF_ctx_ON,RF_ctx_OFF, RF_ctx] = compute_RF(pos_ON,pos_OFF,pos_xy, ctx_
   RFs_OFF = exp(-dist/retina_RF_sigma);
       
   %% compute RF for cortical cell i thru ON cell:
-%    RF_ctx_ON = ctx_ON * RFs_ON'; 
+   RF_ctx_ON = ctx_ON * RFs_ON'; 
   % cortical RF will be of size: number of V1 cells * number of pixels (RF)
   
-  
-  RF_ctx_ON = zeros(size(RF_xx,1),size(RF_xx,2),size(pos_xy,1));
-  for i=1:size(pos_xy,1),
-        % what is the contribution of retinal ON cells to this cortical RF?
-        for j=1:size(pos_ON,1),
-          % example: RF_50 = reshape(RFs_ON(:,50),size(RF_xx)); 
-          % RFs_ON(:,50): the feedforward weights from all the pixels to the 50th ON_cell
-          RF_here = reshape(RFs_ON(:,j),size(RF_xx)); % number of ROWS in RF * number of COLUMNS in RF
-          RF_ctx_ON(:,:,i) = RF_ctx_ON(:,:,i) + ctx_ON(i,j) * RF_here;
-        end;                                                                    
-  end;
+%   
+%   RF_ctx_ON = zeros(size(RF_xx,1),size(RF_xx,2),size(pos_xy,1));
+%   for i=1:size(pos_xy,1),
+%         % what is the contribution of retinal ON cells to this cortical RF?
+%         for j=1:size(pos_ON,1),
+%           % example: RF_50 = reshape(RFs_ON(:,50),size(RF_xx)); 
+%           % RFs_ON(:,50): the feedforward weights from all the pixels to the 50th ON_cell
+%           RF_here = reshape(RFs_ON(:,j),size(RF_xx)); % number of ROWS in RF * number of COLUMNS in RF
+%           RF_ctx_ON(:,:,i) = RF_ctx_ON(:,:,i) + ctx_ON(i,j) * RF_here;
+%         end;                                                                    
+%   end;
    
   
   
   %% compute RF for cortical cell i thru OFF cell:
-%   RF_ctx_ON = ctx_ON * RFs_ON';
-  % cortical RF will be of size: number of V1 cells * number of pixels (RF)
+  RF_ctx_OFF = ctx_OFF * RFs_OFF';
+%   cortical RF will be of size: number of V1 cells * number of pixels (RF)
   
   
-  RF_ctx_OFF = zeros(size(RF_xx,1),size(RF_xx,2),size(pos_xy,1));
-  for i=1:size(pos_xy,1),
-        % what is the contribution of retinal OFF cells to this cortical RF?
-        for j=1:size(pos_OFF,1),
-          % example: RF_50 = reshape(RFs_ON(:,50),size(RF_xx)); 
-          % RFs_ON(:,50): the feedforward weights from all the pixels to the 50th ON_cell
-          RF_here = reshape(RFs_OFF(:,j),size(RF_xx)); % number of ROWS in RF * number of COLUMNS in RF
-          RF_ctx_OFF(:,:,i) = RF_ctx_OFF(:,:,i) + ctx_OFF(i,j) * RF_here;
-        end;
-  end;
+%   RF_ctx_OFF = zeros(size(RF_xx,1),size(RF_xx,2),size(pos_xy,1));
+%   for i=1:size(pos_xy,1),
+%         % what is the contribution of retinal OFF cells to this cortical RF?
+%         for j=1:size(pos_OFF,1),
+%           % example: RF_50 = reshape(RFs_ON(:,50),size(RF_xx)); 
+%           % RFs_ON(:,50): the feedforward weights from all the pixels to the 50th ON_cell
+%           RF_here = reshape(RFs_OFF(:,j),size(RF_xx)); % number of ROWS in RF * number of COLUMNS in RF
+%           RF_ctx_OFF(:,:,i) = RF_ctx_OFF(:,:,i) + ctx_OFF(i,j) * RF_here;
+%         end;
+%   end;
 
 
    %% compute overall RF by subtracting RF_ctx_OFF from RF_ctx_ON
