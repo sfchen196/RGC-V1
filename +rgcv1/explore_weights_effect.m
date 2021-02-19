@@ -18,10 +18,10 @@ pos_xy = combvec(-1600:100:1600,-1600:100:1600)';
 [RF_xx, RF_yy] = meshgrid(linspace(0,pi,201));
 
 index = 0;
-for i=1:2
-    for j=1:2
+for i=1:3
+    for j=1:3
         index = index + 1;
-        ctx_retina_sigma = i*28
+        ctx_retina_sigma = i*56
         retina_RF_sigma = j*7
         %% Calculate weights between stimulus/RF and cortical cells
         [RF_ctx_ON,RF_ctx_OFF, CTX_RF] = rgcv1.compute_RF(pos_ON,pos_OFF,pos_xy, ctx_retina_sigma, retina_RF_sigma, RF_xx, RF_yy);
@@ -29,9 +29,22 @@ for i=1:2
         %% Calculate orientation tuning of each cortical cell
         [best_response, best_response_location, selectivity, angles] = rgcv1.compute_OT(CTX_RF, RF_xx, RF_yy);
         angles = reshape(angles, sqrt(numel(best_response_location)), sqrt(numel(best_response_location)));
-        figure(1); subplot(2,2,index); 
+        figure(1); subplot(3,3,index); 
 
         imagesc(angles); caxis([0 2*pi]); colorbar; colormap(hsv); axis xy image
         title(['c<-r: ' num2str(ctx_retina_sigma) '; r<-s: ' num2str(retina_RF_sigma)]);
     end
 end
+
+ctx_retina_sigma = 7
+retina_RF_sigma = 112
+%% Calculate weights between stimulus/RF and cortical cells
+[RF_ctx_ON,RF_ctx_OFF, CTX_RF] = rgcv1.compute_RF(pos_ON,pos_OFF,pos_xy, ctx_retina_sigma, retina_RF_sigma, RF_xx, RF_yy);
+
+%% Calculate orientation tuning of each cortical cell
+[best_response, best_response_location, selectivity, angles] = rgcv1.compute_OT(CTX_RF, RF_xx, RF_yy);
+angles = reshape(angles, sqrt(numel(best_response_location)), sqrt(numel(best_response_location)));
+figure(2); 
+
+imagesc(angles); caxis([0 2*pi]); colorbar; colormap(hsv); axis xy image
+title(['c<-r: ' num2str(ctx_retina_sigma) '; r<-s: ' num2str(retina_RF_sigma)]);
