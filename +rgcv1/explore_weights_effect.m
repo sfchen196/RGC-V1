@@ -36,6 +36,8 @@ for i=1:3
     end
 end
 
+
+%% when c<-r weight is smaller than r<-s weight
 ctx_retina_sigma = 7
 retina_RF_sigma = 112
 %% Calculate weights between stimulus/RF and cortical cells

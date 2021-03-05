@@ -1,13 +1,14 @@
-function [Result] = RGC_mosaic(crop_ON,crop_OFF,pad_r,crop_x,crop_y)
+function [Result] = RGC_mosaic(crop_ON,crop_OFF,pad_r,crop_x,crop_y, alpha, theta)
 disp("Generate RGC padding and AC mosaics");
 
 %% Lattice spacing
 density_ON = size(crop_ON,1)/4/crop_x/crop_y; %% number of cells/vertices in unit surface
 density_OFF = size(crop_OFF,1)/4/crop_x/crop_y;
 d_ON = sqrt(2/sqrt(3)/density_ON); %% distance/spacing between 2 cells (b.c. most adjacent 3 cells form an equilateral triangle)
-d_OFF = sqrt(2/sqrt(3)/density_OFF);
+d_OFF = (1+alpha)*sqrt(2/sqrt(3)/density_OFF);
 
-theta = 0.15*pi; rot_OFF = [cos(theta) sin(theta); -sin(theta) cos(theta)]; %%csf clockwise rotation of theta
+% theta = 0.15*pi; 
+rot_OFF = [cos(theta) sin(theta); -sin(theta) cos(theta)]; %%csf clockwise rotation of theta
 
 
 %% RGC mosaic 
