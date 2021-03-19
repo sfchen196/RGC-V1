@@ -56,5 +56,7 @@ retina_RF_sigma = 112
 angles = reshape(angles, sqrt(numel(best_response_location)), sqrt(numel(best_response_location)));
 figure(2); 
 
-imagesc(angles); caxis([0 2*pi]); colorbar; colormap(hsv); axis xy image
+imagesc(angles); 
+% caxis([0 2*pi]); 
+colorbar; colormap(hsv); axis xy image
 title(['c<-r: ' num2str(ctx_retina_sigma) '; r<-s: ' num2str(retina_RF_sigma)]);
