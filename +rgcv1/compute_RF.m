@@ -1,4 +1,4 @@
-function [RF_ctx_ON,RF_ctx_OFF, RF_ctx] = compute_RF(pos_ON,pos_OFF,pos_xy, ctx_retina_sigma, retina_RF_sigma, RF_xx, RF_yy)
+function [RF_ctx_ON,RF_ctx_OFF, RF_ctx] = compute_RF(pos_ON,pos_OFF,pos_xy, ctx_retina_sigma, retina_RF_sigma, RF_xx, RF_yy, retina_microns_per_degree)
   %% inputs
       % pos_ON : N*2 matrix, positions of ON-retinal cells
       % pos_OFF: N*2 matrix, positions of OFF-retinal cells
@@ -28,15 +28,15 @@ function [RF_ctx_ON,RF_ctx_OFF, RF_ctx] = compute_RF(pos_ON,pos_OFF,pos_xy, ctx_
   assignin('base','ctx_OFF',ctx_OFF)
  
   % RF of each ON retinal cell   
-  dist_xr = RF_xx(:) - pos_ON(:,1)'; % number of pixels in RF x number of ON retinal cells
-  dist_yr = RF_yy(:) - pos_ON(:,2)'; % number of pixels in RF x number of ON retinal cells
+  dist_xr = RF_xx(:) - pos_ON(:,1)'/retina_microns_per_degree; % number of pixels in RF x number of ON retinal cells
+  dist_yr = RF_yy(:) - pos_ON(:,2)'/retina_microns_per_degree; % number of pixels in RF x number of ON retinal cells
   dist = sqrt(dist_xr.^2+dist_yr.^2); % number of pixels in RF x number of ON retinal cells
   RFs_ON = exp(-dist/retina_RF_sigma); % number of pixels in RF x number of ON retinal cells
   assignin('base','RFs_ON', RFs_ON)
   
   % RF of each OFF retinal cell   
-  dist_xr = RF_xx(:) - pos_OFF(:,1)';
-  dist_yr = RF_yy(:) - pos_OFF(:,2)';
+  dist_xr = RF_xx(:) - pos_OFF(:,1)'/retina_microns_per_degree;
+  dist_yr = RF_yy(:) - pos_OFF(:,2)'/retina_microns_per_degree;
   dist = sqrt(dist_xr.^2+dist_yr.^2);
   RFs_OFF = exp(-dist/retina_RF_sigma);
   assignin('base','RFs_OFF', RFs_OFF) 
