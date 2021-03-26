@@ -3,6 +3,7 @@ function [best_response, best_response_location, selectivity, angles] = compute_
 % 
 % [best_response, best_theta, selectivity] = compute_OT(CTX_RF, RF_XX, RF_YY)
 
+plotit = 1;
 
   % make gratings of each orientation (say, 16 steps O = linspace(0,pi,17));
   % O = O(1:end-1); 
@@ -10,15 +11,29 @@ function [best_response, best_response_location, selectivity, angles] = compute_
   % G = cat(3, G, gratings(..., O(i), ...)
   n_step = 16;
   spatial_phase = 0;
-  spatial_frequency = 10; 
+  spatial_frequency = 0.1; 
   amplitude = 1;
   orientation = linspace(0,pi,n_step+1);
   orientation = orientation(1:end-1);
   
+  if plotit,
+      f = figure;
+  end;
+  
   gratings = zeros(size(RF_XX,1),size(RF_XX,1), numel(orientation));
   for i=1:n_step
-      gratings(:,:,i) = rgcv1.make_grating(RF_XX, RF_YY, orientation(i), spatial_phase, spatial_frequency, amplitude);
+      for j=0:pi/6:2*pi-pi/6,
+          gratings(:,:,i) = rgcv1.make_grating(RF_XX, RF_YY, orientation(i), j, spatial_frequency, amplitude);
+          if plotit,
+              figure(f);
+              imagesc(RF_XX(:,1),RF_YY(:,1)', gratings(:,:,i));
+              if j==2*pi-pi/6,pause(4);else, pause(1); end;
+              
+          end;
+      end;
   end
+
+  
   
 %   for each cell, compute the response
 gratings = reshape(gratings,[size(gratings,1)^2 size(gratings,3)]);
