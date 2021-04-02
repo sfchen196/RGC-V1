@@ -82,7 +82,8 @@ J = reshape(orthogonal_response_location, [], 1);
 k = sub2ind(size(all_responses), I, J);
 C = all_responses(k);
 assignin('base','C',C)
+assignin('base','all_responses',all_responses)
 % both best_response and C can take negative values
-% selectivity = ( best_response - C )./ ( best_response + C ); 
-selectivity = ( best_response - C )./ abs(( C )); 
+selectivity = ( rectify(best_response) - rectify(C) )./ ( rectify(best_response) + rectify(C) ); 
+%selectivity = ( best_response - C )./ abs(( C )); 
 angles = best_response_location/(n_step+1) * 2*pi;

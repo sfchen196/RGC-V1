@@ -1,11 +1,9 @@
 
 theta = 0.15*pi;
-
 alpha = 0;
-
-ctx_retina_sigma = 56;
-
-retina_RF_sigma = 7;
+ctx_retina_sigma = 100;
+retina_RF_sigma = 14;
+threshold = 0.75
 
 
  %% Set up
@@ -52,7 +50,6 @@ figure();
 imagesc(s); caxis([0 1]); colorbar; colormap('default'); axis xy image
 title('Selectivity of each cortical cell');
 %% Plot orientation tuning of cortical cells whose selectivity >= threshold
-threshold = 0.9
 
 
 a=255*angles/(2*pi);
