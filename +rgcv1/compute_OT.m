@@ -15,28 +15,40 @@ plotit = 1;
   amplitude = 1;
   orientation = linspace(0,pi,n_step+1);
   orientation = orientation(1:end-1);
-  
-  if plotit,
-      f = figure;
-  end;
-  
-  gratings = zeros(size(RF_XX,1),size(RF_XX,1), numel(orientation));
-  for i=1:n_step
-      for j=0:pi/6:2*pi-pi/6,
-          gratings(:,:,i) = rgcv1.make_grating(RF_XX, RF_YY, orientation(i), j, spatial_frequency, amplitude);
-          if plotit,
-              figure(f);
-              imagesc(RF_XX(:,1),RF_YY(:,1)', gratings(:,:,i));
-              if j==2*pi-pi/6,pause(4);else, pause(1); end;
-              
-          end;
-      end;
-  end
 
+  phases = 0:pi/6:2*pi-pi/6;
+  % gratings: 2d-matrix of retina cells by (number of orientations*number of phases)
+  gratings = zeros(size(RF_XX,1),size(RF_XX,2), numel(orientation)*numel(phases)); 
+    
+ 
+  for i=1:n_step
+      phase_idx = 1;
+      for spatial_phase = phases
+          gratings(:,:,(i-1)*numel(phases) + phase_idx) = rgcv1.make_grating(RF_XX, RF_YY, orientation(i), spatial_phase, spatial_frequency, amplitude);
+          phase_idx = phase_idx + 1;
+      end
+  end
+  
+  
+   
+%   if plotit,
+%       f = figure;
+%   end;
+%   for i=1:n_step
+%       for j=0:pi/6:2*pi-pi/6,
+%           gratings(:,:,i) = rgcv1.make_grating(RF_XX, RF_YY, orientation(i), j, spatial_frequency, amplitude);
+%           if plotit,
+%               figure(f);
+%               imagesc(RF_XX(:,1),RF_YY(:,1)', gratings(:,:,i));
+%               if j==2*pi-pi/6,pause(4);else, pause(1); end;
+%               
+%           end;
+%       end;
+%   end
   
   
 %   for each cell, compute the response
-gratings = reshape(gratings,[size(gratings,1)^2 size(gratings,3)]);
+gratings = reshape(gratings,[size(gratings,1)*size(gratings,2), size(gratings,3)]);
 all_responses = CTX_RF * gratings;
 
 % matrix multiplication equivalent to the for loop below:
@@ -51,6 +63,10 @@ all_responses = CTX_RF * gratings;
 % end
 
 
+%% Sum the responses for each orientation over phases
+all_responses = reshape(all_responses, size(all_responses,1), numel(orientation), numel(phases));
+all_responses = rectify(all_responses);
+all_responses = sum(all_responses,3);
 
 %   find the best response for each cell
 
