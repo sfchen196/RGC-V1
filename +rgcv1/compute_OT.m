@@ -1,4 +1,4 @@
-function [best_response, best_response_location, selectivity, angles] = compute_OT(CTX_RF, RF_XX, RF_YY)
+function [best_response, best_response_location, selectivity, angles] = compute_OT(CTX_RF, RF_XX, RF_YY, spatial_frequency)
 % COMPUTE_OT - compute orientation tuning for all cortical cells
 % 
 % [best_response, best_theta, selectivity] = compute_OT(CTX_RF, RF_XX, RF_YY)
@@ -11,7 +11,7 @@ plotit = 1;
   % G = cat(3, G, gratings(..., O(i), ...)
   n_step = 16;
   spatial_phase = 0;
-  spatial_frequency = 0.1; 
+%   spatial_frequency = 0.1; 
   amplitude = 1;
   orientation = linspace(0,pi,n_step+1);
   orientation = orientation(1:end-1);
