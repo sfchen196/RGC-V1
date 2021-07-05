@@ -19,7 +19,7 @@ plotit = 1;
   phases = 0:pi/6:2*pi-pi/6;
   % gratings: 2d-matrix of retina cells by (number of orientations*number of phases)
   gratings = zeros(size(RF_XX,1),size(RF_XX,2), numel(orientation),numel(phases)); 
-    
+   
  
   for i=1:n_step
       phase_idx = 1;
@@ -29,8 +29,8 @@ plotit = 1;
       end
   end
   
-  
-   
+  disp("Finish gratings");
+  assignin('base','gratings', gratings);
 %   if plotit,
 %       f = figure;
 %   end;
@@ -45,20 +45,20 @@ plotit = 1;
 %           end;
 %       end;
 %   end
-  
-  
+%   
+%   
 %   for each cell, compute the response
 % gratings = reshape(gratings,[size(gratings,1)*size(gratings,2), size(gratings,3)]);
 % all_responses = CTX_RF * gratings;
 
 % matrix multiplication equivalent to the for loop below:
-%CTX_RF = reshape(CTX_RF, size(CTX_RF,1), sqrt(size(CTX_RF,2)), sqrt(size(CTX_RF,2))); % DIM: number of cortical cells X size(RF_XX,1) X size(RF_XX,2) 
-% % ALL_RESPONSES is NxO, 
+% CTX_RF = reshape(CTX_RF, size(CTX_RF,1), sqrt(size(CTX_RF,2)), sqrt(size(CTX_RF,2))); % DIM: number of cortical cells X size(RF_XX,1) X size(RF_XX,2) 
+% ALL_RESPONSES is NxO, 
 all_responses = zeros(size(CTX_RF,1), numel(orientation));
 for c=1:size(CTX_RF,1)
     rf_shape = reshape(CTX_RF(c,:),size(RF_XX,1),size(RF_XX,2));
-%     rf_shape = rf_shape(end:-1:1,:);
-    rf_shape = rf_shape(end:-1:1,:,:);
+    rf_shape = rf_shape(end:-1:1,:);
+%     rf_shape = rf_shape(end:-1:1,:,:);
     for i=1:n_step
         for j=1:numel(phases),
             inputs = rf_shape  .* gratings(:,:,i,j);
@@ -67,6 +67,9 @@ for c=1:size(CTX_RF,1)
         end;
     end;
 end
+
+
+disp("finished responses");
 
 
 %% Sum the responses for each orientation over phases
@@ -92,4 +95,4 @@ assignin('base','all_responses',all_responses)
 % both best_response and C can take negative values
 selectivity = ( rectify(best_response) - rectify(C) )./ ( rectify(best_response) + rectify(C) ); 
 %selectivity = ( best_response - C )./ abs(( C )); 
-angles = best_response_location/(n_step+1) * 2*pi;
+angles = best_response_location/(n_step) * pi;

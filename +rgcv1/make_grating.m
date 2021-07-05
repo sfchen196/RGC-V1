@@ -26,14 +26,14 @@ function grating = make_grating(RF_xx, RF_yy, orientation, spatial_phase, spatia
 %     grating = amplitude * sign(sin(2 * pi * spatial_frequency * RF_xx + spatial_phase));
 %     surf(RF_xx, RF_yy, grating);
 %     shading interp
-% %     view(2)
+%     view(2)
 %     colormap gray
 % 
 %    imagesc(grating)
 %   colormap(gray(256))
 %    axis off
 %   axis square
-    
+%     
     
     
 

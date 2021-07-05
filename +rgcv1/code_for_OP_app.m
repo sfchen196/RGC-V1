@@ -35,19 +35,21 @@ retina_microns_per_degree = 1500 / 30;
 [RF_ctx_ON,RF_ctx_OFF, CTX_RF] = rgcv1.compute_RF(pos_ON,pos_OFF,pos_xy, ctx_retina_sigma, retina_RF_sigma, RF_xx, RF_yy, retina_microns_per_degree );
 
 %% Calculate orientation tuning of each cortical cell
-frequencies = 0.1:0.01:0.5;
-best_r = -inf;
-best_f = 0;
-for f=frequencies
-[best_response, best_response_location, selectivity, angles] = rgcv1.compute_OT(CTX_RF, RF_xx, RF_yy, f);
-if best_r < sum(rectify(best_response))
-    best_r = sum(rectify(best_response));
-    best_f = f;
-end
-end
+best_f=0.1
 
-best_r
-best_f
+% frequencies = 0.1:0.01:0.5;
+% best_r = -inf;
+% best_f = 0;
+% for f=frequencies
+% [best_response, best_response_location, selectivity, angles] = rgcv1.compute_OT(CTX_RF, RF_xx, RF_yy, f);
+% if best_r < sum(rectify(best_response))
+%     best_r = sum(rectify(best_response));
+%     best_f = f;
+% end
+% end
+% 
+% best_r
+% best_f
 [best_response, best_response_location, selectivity, angles] = rgcv1.compute_OT(CTX_RF, RF_xx, RF_yy, best_f);
 a = reshape(angles, sqrt(numel(best_response_location)), sqrt(numel(best_response_location)));
 

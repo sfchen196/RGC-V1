@@ -18,14 +18,17 @@ function [RF_ctx_ON,RF_ctx_OFF, RF_ctx] = compute_RF(pos_ON,pos_OFF,pos_xy, ctx_
   disty = pos_xy(:,2) - pos_ON(:,2)'; % number of V1 cells x number of ON retinal cells
   dist = sqrt(distx.^2+disty.^2);   % number of V1 cells x number of ON retinal cells
   ctx_ON = exp(-dist/ctx_retina_sigma);    % number of V1 cells x number of ON retinal cells
-  assignin('base','ctx_ON',ctx_ON) 
+  assignin('base','ctx_ON',ctx_ON)
+  assignin('base','dist_ON',dist)
   
   % V1<-OFF
   distx = pos_xy(:,1) - pos_OFF(:,1)';
   disty = pos_xy(:,2) - pos_OFF(:,2)';
   dist = sqrt(distx.^2+disty.^2);
   ctx_OFF = exp(-dist/ctx_retina_sigma);
-  assignin('base','ctx_OFF',ctx_OFF)
+  assignin('base','ctx_OFF', ctx_OFF)
+  assignin('base','dist_OFF',dist)
+  
  
   % RF of each ON retinal cell   
   dist_xr = RF_xx(:) - pos_ON(:,1)'/retina_microns_per_degree; % number of pixels in RF x number of ON retinal cells
