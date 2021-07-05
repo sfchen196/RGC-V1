@@ -15,7 +15,8 @@ plotit = 1;
   amplitude = 1;
   orientation = linspace(0,pi,n_step+1);
   orientation = orientation(1:end-1);
-
+  assignin('base', 'orientations', orientation);   
+  
   phases = 0:pi/6:2*pi-pi/6;
   % gratings: 2d-matrix of retina cells by (number of orientations*number of phases)
   gratings = zeros(size(RF_XX,1),size(RF_XX,2), numel(orientation),numel(phases)); 
