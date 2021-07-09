@@ -10,7 +10,7 @@ function plot_retina_cortex(S, ctx_select)
 
     %%
     if nargin<2
-        ctx_select = 15*34; 
+        ctx_select = 17*34; 
         % To select V1 cell in the middle of the figure, 
         % use 15*n (where n is any even number)
         
@@ -19,10 +19,13 @@ function plot_retina_cortex(S, ctx_select)
     
     %% plot gratings
    
-%     index = S.orientations==S.angles(ctx_select);
-%     figure(); 
-%     imagesc(S.RF_xx(:,1),S.RF_yy(:,1)', S.gratings(:,:,index,1));
-%     ax_grating = gca;
+    index = S.orientations==S.angles(ctx_select);
+    figure(); 
+%     imagesc(S.RF_xx(:,1) ,S.RF_yy(:,1)', S.gratings(:,:,index,1));
+%      imagesc(S.RF_xx(1,:)*S.retina_microns_per_degree,S.RF_yy(:,1)*S.retina_microns_per_degree, ...
+%      S.gratings(:,:,index,1));
+    imagesc(S.RF_xx(1,:) ,S.RF_yy(:,1), S.gratings(:,:,index,1));
+    ax_grating = gca;
     
     %% plot retinal cells
     retina_fig = figure;
@@ -36,46 +39,46 @@ function plot_retina_cortex(S, ctx_select)
     
     
     %% plot cortical cells
-%     ctx_fig = figure;
-%     plot(S.pos_xy(:,1),S.pos_xy(:,2),'go');
-%     hold on;
-%     plot(S.pos_xy(ctx_select,1),S.pos_xy(ctx_select,2),'md');
-%     ax_cortex = gca;
-%     title('Cortical cell position');
-%     box off;
-%     
-%     linkaxes([ax_cortex,ax_retina]);
+    ctx_fig = figure;
+    plot(S.pos_xy(:,1),S.pos_xy(:,2),'go');
+    hold on;
+    plot(S.pos_xy(ctx_select,1),S.pos_xy(ctx_select,2),'md');
+    ax_cortex = gca;
+    title('Cortical cell position');
+    box off;
+    
+    linkaxes([ax_cortex,ax_retina]);
     
     %% plot weights
-%     rf_off_fig = figure;
-%     RF_ctx_OFF = S.RF_ctx_OFF(ctx_select,:);
-%     RF_ctx_OFF = reshape(RF_ctx_OFF, sqrt(size(RF_ctx_OFF,2)), sqrt(size(RF_ctx_OFF,2)));
-%     %RF_ctx_OFF = reshape(RF_ctx_OFF, size(RF_ctx_OFF,3), size(RF_ctx_OFF,1)*size(RF_ctx_OFF,2));
-%     imagesc(S.RF_xx(1,:),S.RF_yy(:,1),RF_ctx_OFF);
-%     set(gca,'ydir','normal');
-%     % ax_rf = gca;
-%     title('RF Off');
-%     box off;
-%     
-%     
-%     rf_on_fig = figure;
-%     RF_ctx_ON = S.RF_ctx_ON(ctx_select,:);
-%     RF_ctx_ON = reshape(RF_ctx_ON, sqrt(size(RF_ctx_ON,2)), sqrt(size(RF_ctx_ON,2)));
-%     imagesc(S.RF_xx(1,:),S.RF_yy(:,1),RF_ctx_ON);
-%     set(gca,'ydir','normal');
-%     % ax_rf = gca;
-%     title('RF On');
-%     box off;
-% 
-% 
-%     rf_ctx_fig = figure;
-%     RF_ctx = S.CTX_RF(ctx_select,:);
-%     RF_ctx = reshape(RF_ctx, sqrt(size(RF_ctx,2)), sqrt(size(RF_ctx,2)));
-%     imagesc(S.RF_xx(1,:),S.RF_yy(:,1),RF_ctx, [ -max(abs(RF_ctx(:))) max(abs(RF_ctx(:)))]);
-%     set(gca,'ydir','normal');
-%     % ax_rf = gca;
-%     title('RF total');
-%     box off;
+    rf_off_fig = figure;
+    RF_ctx_OFF = S.RF_ctx_OFF(ctx_select,:);
+    RF_ctx_OFF = reshape(RF_ctx_OFF, sqrt(size(RF_ctx_OFF,2)), sqrt(size(RF_ctx_OFF,2)));
+    %RF_ctx_OFF = reshape(RF_ctx_OFF, size(RF_ctx_OFF,3), size(RF_ctx_OFF,1)*size(RF_ctx_OFF,2));
+    imagesc(S.RF_xx(1,:),S.RF_yy(:,1),RF_ctx_OFF);
+    set(gca,'ydir','normal');
+    % ax_rf = gca;
+    title('RF Off');
+    box off;
+    
+    
+    rf_on_fig = figure;
+    RF_ctx_ON = S.RF_ctx_ON(ctx_select,:);
+    RF_ctx_ON = reshape(RF_ctx_ON, sqrt(size(RF_ctx_ON,2)), sqrt(size(RF_ctx_ON,2)));
+    imagesc(S.RF_xx(1,:),S.RF_yy(:,1),RF_ctx_ON);
+    set(gca,'ydir','normal');
+    % ax_rf = gca;
+    title('RF On');
+    box off;
+
+
+    rf_ctx_fig = figure;
+    RF_ctx = S.CTX_RF(ctx_select,:);
+    RF_ctx = reshape(RF_ctx, sqrt(size(RF_ctx,2)), sqrt(size(RF_ctx,2)));
+    imagesc(S.RF_xx(1,:),S.RF_yy(:,1),RF_ctx, [ -max(abs(RF_ctx(:))) max(abs(RF_ctx(:)))]);
+    set(gca,'ydir','normal');
+    % ax_rf = gca;
+    title('RF total');
+    box off;
 
 
 %     ctx_OFF_fig = figure;
@@ -182,4 +185,9 @@ function plot_retina_cortex(S, ctx_select)
     disp(['The angle pool of different gratings is ( ' ...
         num2str(angle_pool) ' )']);
     
+    %% plot V1 cell's responses to all gratings
+    figure; 
+    plot(S.all_responses(ctx_select,:));
+%     ylim([0 1000]);
+%     xlim([0 17]);
 end

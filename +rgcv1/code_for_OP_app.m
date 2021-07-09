@@ -28,7 +28,7 @@ pos_xy = combvec(-1600:100:1600,-1600:100:1600)';
 visual_space_to_simulate = 30;
 [RF_xx, RF_yy] = meshgrid(linspace(-visual_space_to_simulate,visual_space_to_simulate,201));
 
-retina_microns_per_degree = 1500 / 30;
+retina_microns_per_degree = 1600 / 30;
 
 %% Calculate weights between stimulus/RF and cortical cells
 
