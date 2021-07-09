@@ -4,13 +4,14 @@ function plot_retina_cortex(S, ctx_select)
     
         % plot_retina_cortex(workspace2struct, 450)
     % This function call will yield plots about the 450th cortical cell
+    
     %%    
     % To run this file, first run code_for_OP_app in order to
     % have every variable needed in the 'base' workspace
 
     %%
     if nargin<2
-        ctx_select = 17*34; 
+        ctx_select = 17*30; 
         % To select V1 cell in the middle of the figure, 
         % use 15*n (where n is any even number)
         
@@ -118,7 +119,7 @@ function plot_retina_cortex(S, ctx_select)
 %     figure(retina_fig); scatter(S.pos_OFF(ctx_OFF_select>0.005,1), S.pos_OFF(ctx_OFF_select>0.005,2),'filled','MarkerFaceColor','B')
 %     figure(retina_fig); scatter(S.pos_ON(ctx_ON_select>0.005,1), S.pos_ON(ctx_ON_select>0.005,2),'filled','MarkerFaceColor','R')
 %     
-    figure();
+    ctx_retina_fig = figure();
     ax1 = axes;
     scatter(ax1, S.pos_ON(:,1), S.pos_ON(:,2), 100, ctx_ON_select, 'filled'); hold on;
     ax2 = axes;
@@ -134,10 +135,14 @@ function plot_retina_cortex(S, ctx_select)
     set([ax1,ax2],'Position',[.17 .11 .685 .815]);
     cb1 = colorbar(ax1,'Position',[.045 .11 .0675 .815]);
     cb2 = colorbar(ax2,'Position',[.88 .11 .0675 .815]);
+    figure(ctx_retina_fig);
+    title('Weights between the selected cortical cell and ON(red) and OFF(blue) retinal cells');
 
     % plot the selected cortical cell overlapping with the retinal cells
     figure(retina_fig), plot(S.pos_xy(ctx_select,1),S.pos_xy(ctx_select,2),'gx', 'MarkerSize', 10);
-    
+
+    figure(ctx_retina_fig); hold on; plot(S.pos_xy(ctx_select,1),S.pos_xy(ctx_select,2),'gx', 'MarkerSize', 10);
+
     % plot nearest ON and OFF retinal cells
     [~, nearest_ON] = min(S.dist_ON(ctx_select,:));
     figure(retina_fig); 
@@ -167,12 +172,25 @@ function plot_retina_cortex(S, ctx_select)
     while angle_conn < 0
         angle_conn = angle_conn + pi;
     end 
+    
+  
     % calculate the angle that is perpendicular to `angle_connect`
     if angle_conn < pi/2
         angle_perp = angle_conn + pi/2; 
+        % adjust to our system which corresponds 0 degree to the vertical line
+        angle_conn = 2/pi - angle_conn; 
     else
         angle_perp = angle_conn - pi/2;
+        % adjust to our system which corresponds 0 degree to the vertical line
+        angle_conn = pi - angle_conn + pi/2; 
     end 
+    if angle_perp < pi/2
+        % adjust to our system which corresponds 0 degree to the vertical line
+        angle_perp = 2/pi - angle_perp;
+    else
+        % adjust to our system which corresponds 0 degree to the vertical line
+        angle_perp = pi - angle_perp + pi/2;
+    end
     disp(['The angle of the connecting line ' ...
         'between the nearest ON and OFF cells is ' num2str(angle_conn)]);
     disp(['The perpendicular angle of the connecting line ' ...
@@ -188,6 +206,8 @@ function plot_retina_cortex(S, ctx_select)
     %% plot V1 cell's responses to all gratings
     figure; 
     plot(S.all_responses(ctx_select,:));
+    title('Responses of the selected cortical cell');
+    xlabel('Grating Orientation');
 %     ylim([0 1000]);
 %     xlim([0 17]);
 end
