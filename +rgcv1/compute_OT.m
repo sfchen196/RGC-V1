@@ -20,7 +20,6 @@ plotit = 1;
   phases = 0:pi/6:2*pi-pi/6;
   % gratings: 2d-matrix of retina cells by (number of orientations*number of phases)
   gratings = zeros(size(RF_XX,1),size(RF_XX,2), numel(orientation),numel(phases)); 
-   
  
   for i=1:n_step
       phase_idx = 1;
@@ -59,7 +58,7 @@ plotit = 1;
 all_responses = zeros(size(CTX_RF,1), numel(orientation));
 % for c=1:size(CTX_RF,1)
 %                              
-% %     rf_shape = rf_shape(end:-1:1,:,:);
+%     rf_shape = rf_shape(end:-1:1,:,:);
 %     for i=1:n_step
 %         for j=1:numel(phases),
 %             inputs = rf_shape  .* gratings(:,:,i,j);
@@ -74,6 +73,8 @@ all_responses = zeros(size(CTX_RF,1), numel(orientation));
 
 g_copy = reshape(gratings, size(gratings,1)*size(gratings,2), ...
     size(gratings,3), size(gratings,4));
+
+  
 for i=1:n_step
     gratings_phases = reshape(g_copy(:,i,:), size(g_copy,1), size(g_copy,3));
     all_responses_phases = rectify(CTX_RF*gratings_phases);
@@ -82,9 +83,9 @@ end
 disp("finished responses");
 
 %% Sum the responses for each orientation over phases
-%all_responses = reshape(all_responses, size(all_responses,1), numel(orientation), numel(phases));
-%all_responses = rectify(all_responses);
-%all_responses = sum(all_responses,3);
+% all_responses = reshape(all_responses, size(all_responses,1), numel(orientation), numel(phases));
+% all_responses = rectify(all_responses);
+% all_responses = sum(all_responses,3);
 
 %   find the best response for each cell
 
@@ -105,3 +106,5 @@ assignin('base','all_responses',all_responses)
 selectivity = ( rectify(best_response) - rectify(C) )./ ( rectify(best_response) + rectify(C) ); 
 %selectivity = ( best_response - C )./ abs(( C )); 
 angles = best_response_location/(n_step) * pi;
+assignin('base','angles',angles)
+assignin('base','selectivity',selectivity)

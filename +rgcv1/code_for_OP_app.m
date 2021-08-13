@@ -1,10 +1,14 @@
+function code_for_OP_app(theta, alpha, ctx_retina_sigma, retina_RF_sigma)
 
-theta = 0.15*pi;
-alpha = 0;
-ctx_retina_sigma = 100;
-% retina_RF_sigma = 14;
-retina_RF_sigma = 7;
-threshold = 0.75
+if nargin < 1
+    theta = 0.15*pi;
+    alpha = 0;
+    ctx_retina_sigma = 100;
+    % retina_RF_sigma = 14;
+    retina_RF_sigma = 14;
+end
+
+threshold = 0.75;
 
 
  %% Set up
@@ -21,20 +25,27 @@ Result = rgcv1.RGC_mosaic(crop_ON,crop_OFF,pad_r,crop_x,crop_y,alpha, theta);
 pos_ON = cell2mat(Result(1));
 pos_OFF = cell2mat(Result(2));
 
+assignin('base','pos_ON',pos_ON)
+assignin('base','pos_OFF',pos_OFF)
 %% V1 Cortical Cell grids
 pos_xy = combvec(-1600:100:1600,-1600:100:1600)';
-
+assignin('base','pos_xy',pos_xy)
 %% Stimulus Gratings
 % [RF_xx, RF_yy] = meshgrid(linspace(0,pi,201));
 visual_space_to_simulate = 30;
 [RF_xx, RF_yy] = meshgrid(linspace(-visual_space_to_simulate,visual_space_to_simulate,201));
 
+assignin('base','RF_xx',RF_xx)
+assignin('base','RF_yy',RF_yy)
 retina_microns_per_degree = 1600 / 30;
 
 %% Calculate weights between stimulus/RF and cortical cells
 
 [RF_ctx_ON,RF_ctx_OFF, CTX_RF] = rgcv1.compute_RF(pos_ON,pos_OFF,pos_xy, ctx_retina_sigma, retina_RF_sigma, RF_xx, RF_yy, retina_microns_per_degree );
 
+assignin('base','RF_ctx_ON',RF_ctx_ON)
+assignin('base','RF_ctx_OFF',RF_ctx_OFF)
+assignin('base','CTX_RF',CTX_RF)
 %% Calculate orientation tuning of each cortical cell
 best_f=0.1
 
@@ -54,35 +65,38 @@ best_f=0.1
 [best_response, best_response_location, selectivity, angles] = rgcv1.compute_OT(CTX_RF, RF_xx, RF_yy, best_f);
 a = reshape(angles, sqrt(numel(best_response_location)), sqrt(numel(best_response_location)));
 
-figure();
-ax1=gca;
-imagesc(a); 
-caxis([0 pi]); 
-colorbar; colormap(hsv); axis xy image
-title(['c<-r: ' num2str(ctx_retina_sigma) '; r<-s: ' num2str(retina_RF_sigma)]);
+assignin('base','best_response',best_response)
+assignin('base','best_response_location',best_response_location)
+% figure();
+% ax1=gca;
+% imagesc(a); 
+% caxis([0 pi]); 
+% colorbar; colormap(hsv); axis xy image
+% title(['c<-r: ' num2str(ctx_retina_sigma) '; r<-s: ' num2str(retina_RF_sigma)]);
 
  %% Plot selectivity of each cortical cell
-s = reshape(selectivity, sqrt(numel(angles)), sqrt(numel(angles)));
-figure();
-ax2=gca;
-imagesc(s); caxis([0 1]); colorbar; colormap('default'); axis xy image
-title('Selectivity of each cortical cell');
+% s = reshape(selectivity, sqrt(numel(angles)), sqrt(numel(angles)));
+% figure();
+% ax2=gca;
+% imagesc(s); caxis([0 1]); colorbar; colormap('default'); axis xy image
+% title('Selectivity of each cortical cell');
 %% Plot orientation tuning of cortical cells whose selectivity >= threshold
 
 
-a=255*angles/(pi);
-U8 = uint8(a);
+% a=255*angles/(pi);
+% U8 = uint8(a);
 %U8 = uint8(round(a - 1));
-a = ind2rgb(U8,colormap(hsv));
-a(selectivity < threshold,:,1) = 0;
-a(selectivity < threshold,:,2) = 0;
-a(selectivity < threshold,:,3) = 0;
-a = reshape(a, sqrt(numel(angles)), sqrt(numel(angles)), 3);
-figure();
-ax3=gca;
-image(1:33,1:33,a); 
-caxis([0 255]); 
-colorbar; colormap(hsv);
-axis xy image
-title(['Angle of each cortical cell whose selectivity >= ' num2str(threshold)]);
-linkaxes([ax1 ax2 ax3])
+% a = ind2rgb(U8,colormap(hsv));
+% a(selectivity < threshold,:,1) = 0;
+% a(selectivity < threshold,:,2) = 0;
+% a(selectivity < threshold,:,3) = 0;
+% a = reshape(a, sqrt(numel(angles)), sqrt(numel(angles)), 3);
+% % figure();
+% ax3=gca;
+% image(1:33,1:33,a); 
+% caxis([0 255]); 
+% colorbar; colormap(hsv);
+% axis xy image
+% title(['Angle of each cortical cell whose selectivity >= ' num2str(threshold)]);
+% linkaxes([ax1 ax2 ax3])
+end 

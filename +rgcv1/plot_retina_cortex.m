@@ -11,11 +11,16 @@ function plot_retina_cortex(S, ctx_select)
 
     %%
     if nargin<2
-        ctx_select = 17*30; 
+        ctx_select = 70; 
         % To select V1 cell in the middle of the figure, 
         % use 15*n (where n is any even number)
         
     end
+    
+    if nargin<1
+        S = rgcv1.workspace2struct_base;
+    end
+    
 
     
     %% plot gratings
@@ -29,49 +34,49 @@ function plot_retina_cortex(S, ctx_select)
     ax_grating = gca;
     
     %% plot retinal cells
-    retina_fig = figure;
-    assignin('base','retina_fig',retina_fig);
-    plot(S.pos_ON(:,1),S.pos_ON(:,2),'ro');
-    hold on;
-    plot(S.pos_OFF(:,1),S.pos_OFF(:,2),'bo');
-    ax_retina = gca;
-    title('Retinal cell position, red=ON,blue=OFF');
-    box off;
+%     retina_fig = figure;
+%     assignin('base','retina_fig',retina_fig);
+%     plot(S.pos_ON(:,1),S.pos_ON(:,2),'ro');
+%     hold on;
+%     plot(S.pos_OFF(:,1),S.pos_OFF(:,2),'bo');
+%     ax_retina = gca;
+%     title('Retinal cell position, red=ON,blue=OFF');
+%     box off;
     
     
     %% plot cortical cells
-    ctx_fig = figure;
-    plot(S.pos_xy(:,1),S.pos_xy(:,2),'go');
-    hold on;
-    plot(S.pos_xy(ctx_select,1),S.pos_xy(ctx_select,2),'md');
-    ax_cortex = gca;
-    title('Cortical cell position');
-    box off;
-    
-    linkaxes([ax_cortex,ax_retina]);
+%     ctx_fig = figure;
+%     plot(S.pos_xy(:,1),S.pos_xy(:,2),'go');
+%     hold on;
+%     plot(S.pos_xy(ctx_select,1),S.pos_xy(ctx_select,2),'md');
+%     ax_cortex = gca;
+%     title('Cortical cell position');
+%     box off;
+%     
+%     linkaxes([ax_cortex,ax_retina]);
     
     %% plot weights
-    rf_off_fig = figure;
-    RF_ctx_OFF = S.RF_ctx_OFF(ctx_select,:);
-    RF_ctx_OFF = reshape(RF_ctx_OFF, sqrt(size(RF_ctx_OFF,2)), sqrt(size(RF_ctx_OFF,2)));
-    %RF_ctx_OFF = reshape(RF_ctx_OFF, size(RF_ctx_OFF,3), size(RF_ctx_OFF,1)*size(RF_ctx_OFF,2));
-    imagesc(S.RF_xx(1,:),S.RF_yy(:,1),RF_ctx_OFF);
-    colorbar();
-    set(gca,'ydir','normal');
-    % ax_rf = gca;
-    title('RF Off');
-    box off;
-    
-    
-    rf_on_fig = figure;
-    RF_ctx_ON = S.RF_ctx_ON(ctx_select,:);
-    RF_ctx_ON = reshape(RF_ctx_ON, sqrt(size(RF_ctx_ON,2)), sqrt(size(RF_ctx_ON,2)));
-    imagesc(S.RF_xx(1,:),S.RF_yy(:,1),RF_ctx_ON);
-    colorbar();
-    set(gca,'ydir','normal');
-    % ax_rf = gca;
-    title('RF On');
-    box off;
+%     rf_off_fig = figure;
+%     RF_ctx_OFF = S.RF_ctx_OFF(ctx_select,:);
+%     RF_ctx_OFF = reshape(RF_ctx_OFF, sqrt(size(RF_ctx_OFF,2)), sqrt(size(RF_ctx_OFF,2)));
+%     %RF_ctx_OFF = reshape(RF_ctx_OFF, size(RF_ctx_OFF,3), size(RF_ctx_OFF,1)*size(RF_ctx_OFF,2));
+%     imagesc(S.RF_xx(1,:),S.RF_yy(:,1),RF_ctx_OFF);
+%     colorbar();
+%     set(gca,'ydir','normal');
+%     % ax_rf = gca;
+%     title('RF Off');
+%     box off;
+%     
+%     
+%     rf_on_fig = figure;
+%     RF_ctx_ON = S.RF_ctx_ON(ctx_select,:);
+%     RF_ctx_ON = reshape(RF_ctx_ON, sqrt(size(RF_ctx_ON,2)), sqrt(size(RF_ctx_ON,2)));
+%     imagesc(S.RF_xx(1,:),S.RF_yy(:,1),RF_ctx_ON);
+%     colorbar();
+%     set(gca,'ydir','normal');
+%     % ax_rf = gca;
+%     title('RF On');
+%     box off;
 
 
     rf_ctx_fig = figure;
@@ -122,51 +127,52 @@ function plot_retina_cortex(S, ctx_select)
 %     figure(retina_fig); scatter(S.pos_OFF(ctx_OFF_select>0.005,1), S.pos_OFF(ctx_OFF_select>0.005,2),'filled','MarkerFaceColor','B')
 %     figure(retina_fig); scatter(S.pos_ON(ctx_ON_select>0.005,1), S.pos_ON(ctx_ON_select>0.005,2),'filled','MarkerFaceColor','R')
 %     
-    ctx_retina_fig = figure();
-    ax1 = axes;
-    scatter(ax1, S.pos_ON(:,1), S.pos_ON(:,2), 100, ctx_ON_select, 'filled'); hold on;
-    ax2 = axes;
-    scatter(ax2, S.pos_OFF(:,1), S.pos_OFF(:,2), 100, ctx_OFF_select, 'filled');
-    linkaxes([ax1,ax2])
-    ax2.Visible = 'off';
-    ax2.XTick = [];
-    ax2.YTick = [];
-    cm_ON = [linspace(0,1,256)', zeros(256,2)];
-    cm_OFF = [zeros(256,2), linspace(0,1,256)'];
-    colormap(ax1, cm_ON);
-    colormap(ax2, cm_OFF);
-    set([ax1,ax2],'Position',[.17 .11 .685 .815]);
-    cb1 = colorbar(ax1,'Position',[.045 .11 .0675 .815]);
-    cb2 = colorbar(ax2,'Position',[.88 .11 .0675 .815]);
-    figure(ctx_retina_fig);
-    title('Weights between the selected cortical cell and ON(red) and OFF(blue) retinal cells');
-
-    % plot the selected cortical cell overlapping with the retinal cells
-    figure(retina_fig), plot(S.pos_xy(ctx_select,1),S.pos_xy(ctx_select,2),'gx', 'MarkerSize', 10);
-
-    figure(ctx_retina_fig); hold on; plot(S.pos_xy(ctx_select,1),S.pos_xy(ctx_select,2),'gx', 'MarkerSize', 10);
+%     ctx_retina_fig = figure();
+%     ax1 = axes;
+%     scatter(ax1, S.pos_ON(:,1), S.pos_ON(:,2), 100, ctx_ON_select, 'filled'); hold on;
+%     ax2 = axes;
+%     scatter(ax2, S.pos_OFF(:,1), S.pos_OFF(:,2), 100, ctx_OFF_select, 'filled');
+%     linkaxes([ax1,ax2])
+%     ax2.Visible = 'off';
+%     ax2.XTick = [];
+%     ax2.YTick = [];
+%     cm_ON = [linspace(0,1,256)', zeros(256,2)];
+%     cm_OFF = [zeros(256,2), linspace(0,1,256)'];
+%     colormap(ax1, cm_ON);
+%     colormap(ax2, cm_OFF);
+%     set([ax1,ax2],'Position',[.17 .11 .685 .815]);
+%     cb1 = colorbar(ax1,'Position',[.045 .11 .0675 .815]);
+%     cb2 = colorbar(ax2,'Position',[.88 .11 .0675 .815]);
+%     figure(ctx_retina_fig);
+%     title('Weights between the selected cortical cell and ON(red) and OFF(blue) retinal cells');
+% 
+%     % plot the selected cortical cell overlapping with the retinal cells
+%     figure(retina_fig), plot(S.pos_xy(ctx_select,1),S.pos_xy(ctx_select,2),'gx', 'MarkerSize', 10);
+% 
+%     figure(ctx_retina_fig); hold on; plot(S.pos_xy(ctx_select,1),S.pos_xy(ctx_select,2),'gx', 'MarkerSize', 10);
 
     % plot nearest ON and OFF retinal cells
     [~, nearest_ON] = min(S.dist_ON(ctx_select,:));
-    figure(retina_fig); 
-    scatter(S.pos_ON(nearest_ON,1), S.pos_ON(nearest_ON,2), 'rx', 'SizeData', 100); hold on;
-    
+%     figure(retina_fig); 
+%     scatter(S.pos_ON(nearest_ON,1), S.pos_ON(nearest_ON,2), 'rx', 'SizeData', 100); hold on;
+%     
     [~, nearest_OFF] = min(S.dist_OFF(ctx_select,:));
-    hold on;
-    scatter(S.pos_OFF(nearest_OFF,1), S.pos_OFF(nearest_OFF,2), 'bx', 'SizeData', 100); hold on;
-    
-    % plot the line that connects the retinal ON and cortical cells
-    plot([S.pos_ON(nearest_ON,1), S.pos_xy(ctx_select,1)], ...
-        [S.pos_ON(nearest_ON,2), S.pos_xy(ctx_select,2)]);
-    
-    % plot the line that connects the retinal OFF and cortical cells
-    plot([S.pos_OFF(nearest_OFF,1), S.pos_xy(ctx_select,1)], ...
-        [S.pos_OFF(nearest_OFF,2), S.pos_xy(ctx_select,2)]); hold on;
-    
-    % plot the line that connects the retinal ON and OFF cells
-    plot([S.pos_ON(nearest_ON,1), S.pos_OFF(nearest_OFF,1)], ...
-        [S.pos_ON(nearest_ON,2), S.pos_OFF(nearest_OFF,2)]);
-    
+%     hold on;
+%     scatter(S.pos_OFF(nearest_OFF,1), S.pos_OFF(nearest_OFF,2), 'bx', 'SizeData', 100); hold on;
+%     
+%     % plot the line that connects the retinal ON and cortical cells
+%     plot([S.pos_ON(nearest_ON,1), S.pos_xy(ctx_select,1)], ...
+%         [S.pos_ON(nearest_ON,2), S.pos_xy(ctx_select,2)]);
+%     
+%     % plot the line that connects the retinal OFF and cortical cells
+%     plot([S.pos_OFF(nearest_OFF,1), S.pos_xy(ctx_select,1)], ...
+%         [S.pos_OFF(nearest_OFF,2), S.pos_xy(ctx_select,2)]); hold on;
+%     
+%     % plot the line that connects the retinal ON and OFF cells
+%     plot([S.pos_ON(nearest_ON,1), S.pos_OFF(nearest_OFF,1)], ...
+%         [S.pos_ON(nearest_ON,2), S.pos_OFF(nearest_OFF,2)]);
+
+
     % calculate the angle (`angle_conn`) formed by the line
     % that connects the nearest ON and OFF cells of the selected V1 cell
     pos_nearest_ON = S.pos_ON(nearest_ON,1) + S.pos_ON(nearest_ON,2)*1j;
@@ -208,7 +214,7 @@ function plot_retina_cortex(S, ctx_select)
     %% plot V1 cell's responses to all gratings
     figure; 
     plot(S.all_responses(ctx_select,:));
-    title('Responses of the selected cortical cell');
+    title('Neuronal Responses to individual orientations (summed over phases)');
     xlabel('Grating Orientation');
 %     ylim([0 1000]);
 %     xlim([0 17]);
@@ -227,4 +233,5 @@ function plot_retina_cortex(S, ctx_select)
     end
     stackedplot(X,Y);
     xlabel('Orientation'); 
+    title('Neuronal responses to individual phases/orientations')
 end
