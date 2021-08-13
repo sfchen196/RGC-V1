@@ -58,8 +58,7 @@ plotit = 1;
 
 all_responses = zeros(size(CTX_RF,1), numel(orientation));
 % for c=1:size(CTX_RF,1)
-%     rf_shape = reshape(CTX_RF(c,:),size(RF_XX,1),size(RF_XX,2));
-%     rf_shape = rf_shape(end:-1:1,:);
+%                              
 % %     rf_shape = rf_shape(end:-1:1,:,:);
 %     for i=1:n_step
 %         for j=1:numel(phases),
@@ -77,7 +76,7 @@ g_copy = reshape(gratings, size(gratings,1)*size(gratings,2), ...
     size(gratings,3), size(gratings,4));
 for i=1:n_step
     gratings_phases = reshape(g_copy(:,i,:), size(g_copy,1), size(g_copy,3));
-    all_responses_phases = CTX_RF*gratings_phases;
+    all_responses_phases = rectify(CTX_RF*gratings_phases);
     all_responses(:,i) = sum(all_responses_phases,2);
 end
 disp("finished responses");

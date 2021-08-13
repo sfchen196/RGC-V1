@@ -56,6 +56,7 @@ function plot_retina_cortex(S, ctx_select)
     RF_ctx_OFF = reshape(RF_ctx_OFF, sqrt(size(RF_ctx_OFF,2)), sqrt(size(RF_ctx_OFF,2)));
     %RF_ctx_OFF = reshape(RF_ctx_OFF, size(RF_ctx_OFF,3), size(RF_ctx_OFF,1)*size(RF_ctx_OFF,2));
     imagesc(S.RF_xx(1,:),S.RF_yy(:,1),RF_ctx_OFF);
+    colorbar();
     set(gca,'ydir','normal');
     % ax_rf = gca;
     title('RF Off');
@@ -66,6 +67,7 @@ function plot_retina_cortex(S, ctx_select)
     RF_ctx_ON = S.RF_ctx_ON(ctx_select,:);
     RF_ctx_ON = reshape(RF_ctx_ON, sqrt(size(RF_ctx_ON,2)), sqrt(size(RF_ctx_ON,2)));
     imagesc(S.RF_xx(1,:),S.RF_yy(:,1),RF_ctx_ON);
+    colorbar();
     set(gca,'ydir','normal');
     % ax_rf = gca;
     title('RF On');
@@ -76,6 +78,7 @@ function plot_retina_cortex(S, ctx_select)
     RF_ctx = S.CTX_RF(ctx_select,:);
     RF_ctx = reshape(RF_ctx, sqrt(size(RF_ctx,2)), sqrt(size(RF_ctx,2)));
     imagesc(S.RF_xx(1,:),S.RF_yy(:,1),RF_ctx, [ -max(abs(RF_ctx(:))) max(abs(RF_ctx(:)))]);
+    colorbar();
     set(gca,'ydir','normal');
     % ax_rf = gca;
     title('RF total');
@@ -193,9 +196,8 @@ function plot_retina_cortex(S, ctx_select)
     end
     disp(['The angle of the connecting line ' ...
         'between the nearest ON and OFF cells is ' num2str(angle_conn)]);
-    disp(['The perpendicular angle of the connecting line ' ...
-        'between the nearest ON and OFF cells is ' num2str(angle_perp)]);
-    disp(['The angle of the gratings is ' num2str(S.angles(ctx_select))]);
+    disp(['The perpendicular angle of the connecting line between the nearest ON and OFF cells is ' num2str(angle_perp) ' (' num2str(rad2deg(angle_perp)) ' in degree)']);
+    disp(['The angle of the grating giving the best responses is ' num2str(S.angles(ctx_select)) ' (' num2str(rad2deg(S.angles(ctx_select))) ' in degree)']);
     
     % hardcode 17 for num_step+1 (nubmer of different grating angles + 1)
     angle_pool = linspace(0, pi, 17);
@@ -210,4 +212,19 @@ function plot_retina_cortex(S, ctx_select)
     xlabel('Grating Orientation');
 %     ylim([0 1000]);
 %     xlim([0 17]);
+
+    %% plot responses of individual phases
+    figure;
+    n_phases = size(S.gratings,4);
+    
+    X = angle_pool;
+    Y = zeros(numel(angle_pool), n_phases);
+    g_copy = reshape(S.gratings, size(S.gratings,1)*size(S.gratings,2), ...
+    size(S.gratings,3), size(S.gratings,4));
+    RF_ctx = S.CTX_RF(ctx_select,:);
+    for i=1:n_phases
+        Y(:,i) = rectify(RF_ctx * g_copy(:,:,i));
+    end
+    stackedplot(X,Y);
+    xlabel('Orientation'); 
 end

@@ -2,7 +2,8 @@
 theta = 0.15*pi;
 alpha = 0;
 ctx_retina_sigma = 100;
-retina_RF_sigma = 14;
+% retina_RF_sigma = 14;
+retina_RF_sigma = 7;
 threshold = 0.75
 
 
